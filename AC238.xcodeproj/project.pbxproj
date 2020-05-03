@@ -22,6 +22,8 @@
 		060BE4EF2444963C008FFBEC /* GCDWebServerDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 060BE4DE2444963C008FFBEC /* GCDWebServerDataRequest.m */; };
 		060BE4F02444963C008FFBEC /* GCDWebServerFileRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 060BE4DF2444963C008FFBEC /* GCDWebServerFileRequest.m */; };
 		060BE4F12444963C008FFBEC /* GCDWebDAVServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 060BE4E32444963C008FFBEC /* GCDWebDAVServer.m */; };
+		064C98C2245F517000BE949B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 064C98C0245F516F00BE949B /* README.md */; };
+		064C98C3245F517000BE949B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 064C98C1245F516F00BE949B /* LICENSE */; };
 		065B12222454A86F008339EA /* RootContentList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065B12212454A86F008339EA /* RootContentList.swift */; };
 		065B12272454B51E008339EA /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065B12262454B51E008339EA /* VideoView.swift */; };
 		067CF81124536BB700DFE600 /* image_iphonex_size.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 067CF80F24536BB700DFE600 /* image_iphonex_size.jpg */; };
@@ -98,6 +100,8 @@
 		060BE4E02444963C008FFBEC /* GCDWebServerURLEncodedFormRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerURLEncodedFormRequest.h; sourceTree = "<group>"; };
 		060BE4E22444963C008FFBEC /* GCDWebDAVServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebDAVServer.h; sourceTree = "<group>"; };
 		060BE4E32444963C008FFBEC /* GCDWebDAVServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebDAVServer.m; sourceTree = "<group>"; };
+		064C98C0245F516F00BE949B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		064C98C1245F516F00BE949B /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		065B12212454A86F008339EA /* RootContentList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootContentList.swift; sourceTree = "<group>"; };
 		065B12262454B51E008339EA /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		067CF80F24536BB700DFE600 /* image_iphonex_size.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image_iphonex_size.jpg; sourceTree = "<group>"; };
@@ -237,6 +241,8 @@
 		069484D02419764600A03B32 = {
 			isa = PBXGroup;
 			children = (
+				064C98C1245F516F00BE949B /* LICENSE */,
+				064C98C0245F516F00BE949B /* README.md */,
 				069484DB2419764600A03B32 /* AC238 */,
 				069484F52419764700A03B32 /* AC238Tests */,
 				069485002419764700A03B32 /* AC238UITests */,
@@ -437,6 +443,8 @@
 				069484E92419764700A03B32 /* Preview Assets.xcassets in Resources */,
 				069484E62419764700A03B32 /* Assets.xcassets in Resources */,
 				067CF81224536BB700DFE600 /* image_carre.jpg in Resources */,
+				064C98C3245F517000BE949B /* LICENSE in Resources */,
+				064C98C2245F517000BE949B /* README.md in Resources */,
 				06CA28AF245F4BFC0083CD08 /* image_carre_300.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
