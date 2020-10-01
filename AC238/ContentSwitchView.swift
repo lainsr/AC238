@@ -19,9 +19,7 @@ struct ContentSwitchView: View {
         VStack {
             if file.directory {
                 ContentList(contentName: file.name, directoryPath: childDirectoryPath(), contentArray: childContentArray())
-            } else if file.name.hasSuffix(".mp4") || file.name.hasSuffix(".m4v") {
-                VideoView(file: file, path: directoryPath)
-            } else if !file.directory {
+            } else {
                 ContentSwipeView(contentArray: contentArray, path: directoryPath, start: currentIndex)
             }
         }

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ImageView: View {
     
     let file: ACFile
     let path: String
@@ -23,6 +23,7 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .edgesIgnoringSafeArea(.horizontal)
+                    .frame(width: g.size.width, height: g.size.height, alignment: .center)
             }
             VStack {
                 Spacer()
@@ -52,8 +53,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct ImageView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(file: contentData[0], path: "")
+        ImageView(file: contentData[0], path: "")
     }
 }

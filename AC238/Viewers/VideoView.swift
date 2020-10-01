@@ -10,115 +10,62 @@ import SwiftUI
 import AVKit
 import AVFoundation
 
-// This is the UIView that contains the AVPlayerLayer for rendering the video
-class VideoPlayerUIView: UIView {
-    private let player: AVPlayer
-    private let playerLayer = AVPlayerLayer()
-    private let videoPos: Binding<Double>
-    private let videoDuration: Binding<Double>
-    private let seeking: Binding<Bool>
-    private var durationObservation: NSKeyValueObservation?
-    private var timeObservation: Any?
-  
-    init(player: AVPlayer, videoPos: Binding<Double>, videoDuration: Binding<Double>, seeking: Binding<Bool>) {
-        self.player = player
-        self.videoDuration = videoDuration
-        self.videoPos = videoPos
-        self.seeking = seeking
-        
-        super.init(frame: .zero)
-    
-        backgroundColor = .lightGray
-        playerLayer.player = player
-        playerLayer.videoGravity = .resizeAspect
-        playerLayer.backgroundColor = UIColor.white.cgColor
-        layer.addSublayer(playerLayer)
-        
-        // Observe the duration of the player's item so we can display it
-        // and use it for updating the seek bar's position
-        durationObservation = player.currentItem?.observe(\.duration, changeHandler: { [weak self] item, change in
-            guard let self = self else { return }
-            self.videoDuration.wrappedValue = item.duration.seconds
-        })
-        
-        // Observe the player's time periodically so we can update the seek bar's
-        // position as we progress through playback
-        timeObservation = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 600), queue: nil) { [weak self] time in
-            guard let self = self else { return }
-            // If we're not seeking currently (don't want to override the slider
-            // position if the user is interacting)
-            guard !self.seeking.wrappedValue else {
-                return
-            }
-        
-            // update videoPos with the new video time (as a percentage)
-            self.videoPos.wrappedValue = time.seconds / self.videoDuration.wrappedValue
-        }
-    }
-  
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-  
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    
-        playerLayer.frame = bounds
-    }
-    
-    func cleanUp() {
-        // Remove observers we setup in init
-        durationObservation?.invalidate()
-        durationObservation = nil
-        
-        if let observation = timeObservation {
-            player.removeTimeObserver(observation)
-            timeObservation = nil
-        }
-    }
-  
-}
 
-// This is the SwiftUI view which wraps the UIKit-based PlayerUIView above
-struct VideoPlayerView: UIViewRepresentable {
-    @Binding private(set) var videoPos: Double
-    @Binding private(set) var videoDuration: Double
-    @Binding private(set) var seeking: Bool
+
+// This is the main SwiftUI view for this app, containing a single PlayerContainerView
+struct VideoView: View {
+
+    @State private var showControls = true
+    @State private var duration : Double = 0.0
     
+    private var durationObservation: NSKeyValueObservation?
+    
+    let file: ACFile
+    let path: String
     let player: AVPlayer
     
-    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<VideoPlayerView>) {
-        // This function gets called if the bindings change, which could be useful if
-        // you need to respond to external changes, but we don't in this example
-    }
-    
-    func makeUIView(context: UIViewRepresentableContext<VideoPlayerView>) -> UIView {
-        let uiView = VideoPlayerUIView(player: player,
-                                       videoPos: $videoPos,
-                                       videoDuration: $videoDuration,
-                                       seeking: $seeking)
-        return uiView
-    }
-    
-    static func dismantleUIView(_ uiView: UIView, coordinator: ()) {
-        guard let playerUIView = uiView as? VideoPlayerUIView else {
-            return
-        }
+    init(file: ACFile, path: String) {
+        self.file = file
+        self.path = path
+        let fullPath = path + "/" + file.name
+        player = AVPlayer(url: URL(fileURLWithPath: fullPath))
         
-        playerUIView.cleanUp()
+        durationObservation = player.currentItem?.observe(\.duration, changeHandler: { [self] item, change in
+            self.duration = item.duration.seconds
+            print("First Duration \(self.duration) and item \(item.duration.seconds)")
+        })
+    }
+    
+    var body: some View {
+        ZStack {
+            VideoPlayer(player: player)
+            VStack {
+                Spacer()
+                Text("\(Utility.formatSecondsToHMS(duration))")
+                Spacer()
+                VideoPlayerControlsView(player: player)
+                    .padding()
+            }
+            .opacity(showControls ? 1.0 : 0.0)
+            .animation(.easeInOut)
+        }
     }
 }
 
 // This is the SwiftUI view that contains the controls for the player
 struct VideoPlayerControlsView : View {
-    @Binding private(set) var videoPos: Double
-    @Binding private(set) var videoDuration: Double
-    @Binding private(set) var seeking: Bool
-    
     let player: AVPlayer
+    
+    @State private var videoPos = 0.0
+    @State private var videoDuration = 0.0
+    @State private var seeking = false
     
     @State private var playerPaused = true
     
+    init(player: AVPlayer) {
+        self.player = player
+    }
+
     var body: some View {
         HStack {
             // Play/pause button
@@ -170,65 +117,5 @@ struct VideoPlayerControlsView : View {
                 self.pausePlayer(false)
             }
         }
-    }
-}
-
-// This is the SwiftUI view which contains the player and its controls
-struct VideoPlayerContainerView : View {
-    // The progress through the video, as a percentage (from 0 to 1)
-    @State private var videoPos: Double = 0
-    // The duration of the video in seconds
-    @State private var videoDuration: Double = 0
-    // Whether we're currently interacting with the seek bar or doing a seek
-    @State private var seeking = false
-    
-    @State private var showControls = true
-    
-    private let player: AVPlayer
-  
-    init(file: ACFile, path: String) {
-        let path = path + "/" + file.name
-        let url = URL(fileURLWithPath: path)
-        player = AVPlayer(url: url)
-    }
-  
-    var body: some View {
-        ZStack {
-            VideoPlayerView(videoPos: $videoPos,
-                            videoDuration: $videoDuration,
-                            seeking: $seeking,
-                            player: player)
-                .edgesIgnoringSafeArea(.all)
-            VStack {
-                Spacer()
-                VideoPlayerControlsView(videoPos: $videoPos,
-                                        videoDuration: $videoDuration,
-                                        seeking: $seeking,
-                                        player: player)
-                .padding()
-            }
-            .opacity(showControls ? 1.0 : 0.0)
-            .animation(.easeInOut)
-            
-        }
-        .onTapGesture {
-            self.showControls.toggle()
-        }
-        .onDisappear {
-            // When this View isn't being shown anymore stop the player
-            self.player.replaceCurrentItem(with: nil)
-        }
-    
-    }
-}
-
-// This is the main SwiftUI view for this app, containing a single PlayerContainerView
-struct VideoView: View {
-    
-    let file: ACFile
-    let path: String
-    
-    var body: some View {
-        VideoPlayerContainerView(file: file, path: path)
     }
 }

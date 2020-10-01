@@ -35,8 +35,13 @@ struct ContentSwipeView: View {
             ScrollView(.horizontal, showsIndicators: true) {
                 HStack(spacing: self.spacing) {
                     ForEach(self.contentArray) { contentFile in
-                        ContentView(file: contentFile, path: self.path)
-                            .frame(width: g.size.width)
+                        if contentFile.name.hasSuffix(".mp4") || contentFile.name.hasSuffix(".m4v") {
+                            VideoView(file: contentFile, path: self.path)
+                                .frame(width: g.size.width, height: g.size.height, alignment: Alignment.center)
+                        } else {
+                            ImageView(file: contentFile, path: self.path)
+                                .frame(width: g.size.width, height: g.size.height, alignment: Alignment.center) 
+                        }
                     }
                 }
             }
@@ -59,7 +64,13 @@ struct ContentSwipeView: View {
             )
             .onAppear () {
                 self.index = self.firstIndex
-                self.offset =  -(g.size.width + self.spacing) * CGFloat(self.index)
+                var pageWidth:CGFloat
+                if g.size.width == 0 {
+                    pageWidth = UIScreen.main.bounds.width
+                } else {
+                    pageWidth = g.size.width
+                }
+                self.offset =  -(pageWidth + self.spacing) * CGFloat(self.index)
             }
         }
     }
