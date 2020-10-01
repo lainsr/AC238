@@ -20,6 +20,7 @@ struct RootContentList: View {
         NavigationView {
             ContentList(contentName: contentName, directoryPath: directoryPath, contentArray: contentArray)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showLogin) {
             LoginView(self.$showLogin)
         }

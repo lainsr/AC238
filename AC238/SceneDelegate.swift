@@ -53,7 +53,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 var thumbnailName: String = ""
                 var isDirectory = false
                 
-                if fileName.hasSuffix(".jpg") || fileName.hasSuffix(".jpeg") {
+                if fileName.hasSuffix(".jpg") || fileName.hasSuffix(".jpeg") || fileName.hasSuffix(".png") {
                     thumbnailName = fileName
                 } else if fileName.hasSuffix(".mp4") || fileName.hasSuffix(".m4v") {
                     symboleName = "video"

@@ -32,7 +32,6 @@ struct ImageView: View {
                     .foregroundColor(.gray)
             }
         }
-        .navigationBarTitle(Text(file.name), displayMode: .inline)
         .sheet(isPresented: $showModal) {
             FileInformationsModalView(showModal: self.$showModal, file: self.file, path: self.path)
         }

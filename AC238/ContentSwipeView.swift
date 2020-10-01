@@ -12,6 +12,7 @@ struct ContentSwipeView: View {
     
     @State private var offset: CGFloat = 0
     @State private var index = 0
+    @State private var filename : String = ""
     
     let contentArray: [ACFile]
     let path: String
@@ -33,20 +34,20 @@ struct ContentSwipeView: View {
     var body: some View {
         GeometryReader { g in
             ScrollView(.horizontal, showsIndicators: true) {
-                HStack(spacing: self.spacing) {
+                LazyHStack(alignment: .top, spacing: 10) {
                     ForEach(self.contentArray) { contentFile in
                         if contentFile.name.hasSuffix(".mp4") || contentFile.name.hasSuffix(".m4v") {
                             VideoView(file: contentFile, path: self.path)
-                                .frame(width: g.size.width, height: g.size.height, alignment: Alignment.center)
+                                .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
                         } else {
                             ImageView(file: contentFile, path: self.path)
-                                .frame(width: g.size.width, height: g.size.height, alignment: Alignment.center) 
+                                .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
                         }
                     }
                 }
             }
             .content.offset(x: self.offset)
-            .frame(width: g.size.width, alignment: .leading)
+            .navigationBarTitle(Text(filename), displayMode: .inline)
             .gesture(
                 DragGesture()
                     .onChanged({ value in
@@ -59,11 +60,13 @@ struct ContentSwipeView: View {
                         if value.predictedEndTranslation.width > g.size.width / 2, self.index > 0 {
                             self.index -= 1
                         }
-                        withAnimation { self.offset = -(g.size.width + self.spacing) * CGFloat(self.index) }
+                        self.filename = self.contentArray[self.index].name
+                        withAnimation(.easeOut(duration: 0.3)) { self.offset = -(g.size.width + self.spacing) * CGFloat(self.index) }
                     })
             )
             .onAppear () {
                 self.index = self.firstIndex
+                self.filename = self.contentArray[self.index].name
                 var pageWidth:CGFloat
                 if g.size.width == 0 {
                     pageWidth = UIScreen.main.bounds.width

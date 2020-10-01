@@ -21,6 +21,7 @@ struct ContentList: View {
             }
         }
         .navigationBarTitle(Text(contentName))
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
 }
