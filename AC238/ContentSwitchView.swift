@@ -27,7 +27,9 @@ struct ContentSwitchView: View {
         }
         .opacity(showScrollingView ? 1.0 : 0.0)
         .onAppear() {
-            self.showScrollingView = true
+            if(!self.showScrollingView) {
+                self.showScrollingView = true
+            }
         }
     }
     

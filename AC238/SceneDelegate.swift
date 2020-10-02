@@ -43,12 +43,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         do {
             let files = try FileManager.default.contentsOfDirectory(atPath: directory)
             var acFiles = [ACFile]()
+            var counter = 0
             for fileName in files {
                 if fileName.hasPrefix(".") {
                     continue
                 }
-                let acFile = file(fileName: fileName, directory: directory)
+                let acFile = file(id: counter, fileName: fileName, directory: directory)
                 acFiles.append(acFile)
+                counter += 1
             }
             acFiles.sort() {
                 $0.name.localizedStandardCompare($1.name) == .orderedAscending
@@ -68,7 +70,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return Holder.timesCalled
     }
     
-    static func file(fileName: String, directory: String) -> ACFile {
+    static func file(id: Int, fileName: String, directory: String) -> ACFile {
         var symboleName: String = ""
         var thumbnailName: String = ""
         var isDirectory = false
@@ -84,7 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             symboleName = "doc"
         }
         
-        return ACFile(id: counter(), name: fileName, path: directory, directory: isDirectory, symbol:symboleName, thumbnailName: thumbnailName)
+        return ACFile(id: id, name: fileName, path: directory, directory: isDirectory, symbol:symboleName, thumbnailName: thumbnailName)
     }
     
     static func directoryExistsAtPath(_ path: String, file filename: String) -> Bool {

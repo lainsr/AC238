@@ -46,23 +46,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCDWebDAVServerDelegate {
     
     //- (void)davServer:(GCDWebDAVServer*)server didUploadFileAtPath:(NSString*)path;
     func davServer(_ server: GCDWebDAVServer, didUploadFileAtPath path: String) {
-        self.webdavObserver.lastAdditions.append(path)
+        DispatchQueue.main.async {
+            self.webdavObserver.lastAdditions.append(path)
+        }
     }
     
     //- (void)davServer:(GCDWebDAVServer*)server didCreateDirectoryAtPath:(NSString*)path;
     func davServer(_ server: GCDWebDAVServer, didCreateDirectoryAtPath path: String) {
-        self.webdavObserver.lastAdditions.append(path)
+        DispatchQueue.main.async {
+            self.webdavObserver.lastAdditions.append(path)
+        }
     }
     
     //- (void)davServer:(GCDWebDAVServer*)server didMoveItemFromPath:(NSString*)fromPath toPath:(NSString*)toPath;
     func davServer(_ server: GCDWebDAVServer, didMoveItemFromPath fromPath: String, toPath: String) {
-        self.webdavObserver.lastRemovals.append(fromPath)
-        self.webdavObserver.lastAdditions.append(toPath)
+        DispatchQueue.main.async {
+            self.webdavObserver.lastRemovals.append(fromPath)
+            self.webdavObserver.lastAdditions.append(toPath)
+        }
     }
     
     //- (void)davServer:(GCDWebDAVServer*)server didDeleteItemAtPath:(NSString*)path;
     func davServer(_ server: GCDWebDAVServer, didDeleteItemAtPath path: String) {
-        self.webdavObserver.lastRemovals.append(path)
+        DispatchQueue.main.async {
+            self.webdavObserver.lastRemovals.append(path)
+        }
     }
     
     func davObserver() -> WebDAVObserver {

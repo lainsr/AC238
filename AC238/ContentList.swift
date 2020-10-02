@@ -18,12 +18,16 @@ struct ContentList: View {
     @State var contentArray: [ACFile]
     
     var body: some View {
-        List(contentArray) { contentFile in
+        List(contentArray, id: \.id) { contentFile in
             NavigationLink(destination: ContentSwitchView(contentArray: self.contentArray, currentIndex: contentFile.id, directoryPath: self.directoryPath, file: contentFile, showScrollingView: $showScrollingView)) {
                 ContentRow(file: contentFile).onAppear() {
-                    self.showScrollingView = false
+                    if(self.showScrollingView) {
+                        self.showScrollingView = false
+                    }
                 }
+                .id("row-" + contentFile.name)
             }
+            .id("link-" + contentFile.name)
         }
         .navigationBarTitle(Text(contentName))
         .navigationViewStyle(StackNavigationViewStyle())
@@ -38,8 +42,12 @@ struct ContentList: View {
     func processDAVRemovals(removals: [String]) {
         if let lastRemoval = removals.last {
             let fileName = URL(fileURLWithPath: lastRemoval).lastPathComponent
-            let lastDirectory = URL(fileURLWithPath: lastRemoval).deletingLastPathComponent().absoluteString;
-            let directoryAbsolutePath = URL(fileURLWithPath: directoryPath).absoluteString
+            let lastDirectory = URL(fileURLWithPath: lastRemoval).deletingLastPathComponent()
+                .absoluteString
+                .replacingOccurrences(of: "//", with: "/")
+            let directoryAbsolutePath = URL(fileURLWithPath: directoryPath)
+                .absoluteString
+                .replacingOccurrences(of: "//", with: "/")
             if(lastDirectory == directoryAbsolutePath) {
                 for content in contentArray {
                     if(content.name == fileName) {
@@ -56,8 +64,10 @@ struct ContentList: View {
     func processDAVAdditions(additions: [String]) {
         if let lastAddition = additions.last {
             let fileName = URL(fileURLWithPath: lastAddition).lastPathComponent
-            let lastDirectory = URL(fileURLWithPath: lastAddition).deletingLastPathComponent().absoluteString;
+            let lastDirectory = URL(fileURLWithPath: lastAddition).deletingLastPathComponent().absoluteString
+                .replacingOccurrences(of: "//", with: "/")
             let directoryAbsolutePath = URL(fileURLWithPath: directoryPath).absoluteString
+                .replacingOccurrences(of: "//", with: "/")
             if(lastDirectory == directoryAbsolutePath) {
                 var alreadyInList = false
                 for content in contentArray {
@@ -67,7 +77,8 @@ struct ContentList: View {
                 }
                 
                 if !alreadyInList {
-                    let acFile = SceneDelegate.file(fileName: fileName, directory: directoryPath)
+                    let count = contentArray.count
+                    let acFile = SceneDelegate.file(id: count, fileName: fileName, directory: directoryPath)
                     var acFiles = contentArray
                     acFiles.append(acFile)
                     acFiles.sort() {
