@@ -28,6 +28,9 @@
 		065B12272454B51E008339EA /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065B12262454B51E008339EA /* VideoView.swift */; };
 		067CF81124536BB700DFE600 /* image_iphonex_size.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 067CF80F24536BB700DFE600 /* image_iphonex_size.jpg */; };
 		067CF81224536BB700DFE600 /* image_carre.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 067CF81024536BB700DFE600 /* image_carre.jpg */; };
+		067F38DE252719C9008E6924 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 067F38E0252719C9008E6924 /* Localizable.strings */; };
+		067F38E9252737E8008E6924 /* FileMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067F38E8252737E8008E6924 /* FileMetadataView.swift */; };
+		067F38EE25275061008E6924 /* WebDAVObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067F38ED25275061008E6924 /* WebDAVObserver.swift */; };
 		069135242455B8F5009C3C9C /* FileInformationsModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069135232455B8F5009C3C9C /* FileInformationsModalView.swift */; };
 		0691352A2455C588009C3C9C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069135292455C588009C3C9C /* LoginView.swift */; };
 		069484DD2419764600A03B32 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069484DC2419764600A03B32 /* AppDelegate.swift */; };
@@ -106,6 +109,11 @@
 		065B12262454B51E008339EA /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		067CF80F24536BB700DFE600 /* image_iphonex_size.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image_iphonex_size.jpg; sourceTree = "<group>"; };
 		067CF81024536BB700DFE600 /* image_carre.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image_carre.jpg; sourceTree = "<group>"; };
+		067F38B8252716B3008E6924 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		067F38DF252719C9008E6924 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		067F38E4252719CF008E6924 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		067F38E8252737E8008E6924 /* FileMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMetadataView.swift; sourceTree = "<group>"; };
+		067F38ED25275061008E6924 /* WebDAVObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebDAVObserver.swift; sourceTree = "<group>"; };
 		069135232455B8F5009C3C9C /* FileInformationsModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInformationsModalView.swift; sourceTree = "<group>"; };
 		069135292455C588009C3C9C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		069484D92419764600A03B32 /* AC238.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AC238.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -233,6 +241,7 @@
 				065B12262454B51E008339EA /* VideoView.swift */,
 				069484E32419764600A03B32 /* ImageView.swift */,
 				069135232455B8F5009C3C9C /* FileInformationsModalView.swift */,
+				067F38E8252737E8008E6924 /* FileMetadataView.swift */,
 				06089D4D245590E200F70057 /* Utility.swift */,
 			);
 			path = Viewers;
@@ -270,6 +279,7 @@
 				060BE4C12444963C008FFBEC /* GCDWebServer */,
 				060BE4AE2444940A008FFBEC /* AC238-Bridging-Header.h */,
 				069484DC2419764600A03B32 /* AppDelegate.swift */,
+				067F38ED25275061008E6924 /* WebDAVObserver.swift */,
 				069484DE2419764600A03B32 /* SceneDelegate.swift */,
 				06F40B8B245491E0007DB96E /* ContentSwitchView.swift */,
 				06C0AB6C244C832400CE9FBF /* ContentRow.swift */,
@@ -282,6 +292,7 @@
 				069484ED2419764700A03B32 /* Info.plist */,
 				069484E02419764600A03B32 /* AC238.xcdatamodeld */,
 				069484E72419764700A03B32 /* Preview Content */,
+				067F38E0252719C9008E6924 /* Localizable.strings */,
 			);
 			path = AC238;
 			sourceTree = "<group>";
@@ -419,6 +430,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 069484D02419764600A03B32;
 			productRefGroup = 069484DA2419764600A03B32 /* Products */;
@@ -442,6 +454,7 @@
 				067CF81124536BB700DFE600 /* image_iphonex_size.jpg in Resources */,
 				069484E92419764700A03B32 /* Preview Assets.xcassets in Resources */,
 				069484E62419764700A03B32 /* Assets.xcassets in Resources */,
+				067F38DE252719C9008E6924 /* Localizable.strings in Resources */,
 				067CF81224536BB700DFE600 /* image_carre.jpg in Resources */,
 				064C98C3245F517000BE949B /* LICENSE in Resources */,
 				064C98C2245F517000BE949B /* README.md in Resources */,
@@ -484,7 +497,9 @@
 				060BE4E72444963C008FFBEC /* GCDWebServer.m in Sources */,
 				060BE4EA2444963C008FFBEC /* GCDWebServerFileResponse.m in Sources */,
 				060BE4E52444963C008FFBEC /* GCDWebServerRequest.m in Sources */,
+				067F38E9252737E8008E6924 /* FileMetadataView.swift in Sources */,
 				060BE4ED2444963C008FFBEC /* GCDWebServerURLEncodedFormRequest.m in Sources */,
+				067F38EE25275061008E6924 /* WebDAVObserver.swift in Sources */,
 				06F40B8C245491E0007DB96E /* ContentSwitchView.swift in Sources */,
 				065B12272454B51E008339EA /* VideoView.swift in Sources */,
 				060BE4E92444963C008FFBEC /* GCDWebServerErrorResponse.m in Sources */,
@@ -535,10 +550,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		067F38E0252719C9008E6924 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				067F38DF252719C9008E6924 /* en */,
+				067F38E4252719CF008E6924 /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		069484EA2419764700A03B32 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				069484EB2419764700A03B32 /* Base */,
+				067F38B8252716B3008E6924 /* fr */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -550,6 +575,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -611,6 +637,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

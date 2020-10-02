@@ -61,10 +61,12 @@ struct ContentSwipeView: View {
                             self.index -= 1
                         }
                         self.filename = self.contentArray[self.index].name
-                        withAnimation(.easeOut(duration: 0.3)) { self.offset = -(g.size.width + self.spacing) * CGFloat(self.index) }
+                        withAnimation(.easeOut(duration: 0.3)) {
+                            self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
+                        }
                     })
             )
-            .onAppear () {
+            .onAppear() {
                 self.index = self.firstIndex
                 self.filename = self.contentArray[self.index].name
                 var pageWidth:CGFloat

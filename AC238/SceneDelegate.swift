@@ -23,13 +23,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let rootDirectory = (UIApplication.shared.delegate as! AppDelegate).applicationDocumentsDirectory()
         let rootContent = SceneDelegate.listFiles(filesOf: rootDirectory)
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        
-        print("Path \(rootDirectory)")
-        
+        let davObserver = (UIApplication.shared.delegate as! AppDelegate).davObserver()
+
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
-        let contentView = RootContentList(contentName: "AC238", directoryPath: rootDirectory, contentArray: rootContent).environment(\.managedObjectContext, context)
-
+        let contentView = RootContentList(contentName: "AC238", directoryPath: rootDirectory, contentArray: rootContent, davObserver: davObserver)
+            .environment(\.managedObjectContext, context)
+        
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -43,36 +43,48 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         do {
             let files = try FileManager.default.contentsOfDirectory(atPath: directory)
             var acFiles = [ACFile]()
-            var counter = 0
             for fileName in files {
                 if fileName.hasPrefix(".") {
                     continue
                 }
-                
-                var symboleName: String = ""
-                var thumbnailName: String = ""
-                var isDirectory = false
-                
-                if fileName.hasSuffix(".jpg") || fileName.hasSuffix(".jpeg") || fileName.hasSuffix(".png") {
-                    thumbnailName = fileName
-                } else if fileName.hasSuffix(".mp4") || fileName.hasSuffix(".m4v") {
-                    symboleName = "video"
-                } else if(directoryExistsAtPath(directory, file: fileName)) {
-                    symboleName = "folder"
-                    isDirectory = true
-                } else {
-                    symboleName = "doc"
-                }
-                
-                acFiles.append(ACFile(id: counter, name: fileName, path: directory, directory: isDirectory, symbol:symboleName, thumbnailName: thumbnailName))
-                
-                counter += 1
+                let acFile = file(fileName: fileName, directory: directory)
+                acFiles.append(acFile)
+            }
+            acFiles.sort() {
+                $0.name.localizedStandardCompare($1.name) == .orderedAscending
             }
             return acFiles;
         } catch {
             print("Error: \(error.localizedDescription)")
             return [ACFile]()
         }
+    }
+    
+    static func counter() -> Int {
+        struct Holder {
+            static var timesCalled = 0
+        }
+        Holder.timesCalled += 1
+        return Holder.timesCalled
+    }
+    
+    static func file(fileName: String, directory: String) -> ACFile {
+        var symboleName: String = ""
+        var thumbnailName: String = ""
+        var isDirectory = false
+        
+        if fileName.hasSuffix(".jpg") || fileName.hasSuffix(".jpeg") || fileName.hasSuffix(".png") {
+            thumbnailName = fileName
+        } else if fileName.hasSuffix(".mp4") || fileName.hasSuffix(".m4v") {
+            symboleName = "video"
+        } else if(directoryExistsAtPath(directory, file: fileName)) {
+            symboleName = "folder"
+            isDirectory = true
+        } else {
+            symboleName = "doc"
+        }
+        
+        return ACFile(id: counter(), name: fileName, path: directory, directory: isDirectory, symbol:symboleName, thumbnailName: thumbnailName)
     }
     
     static func directoryExistsAtPath(_ path: String, file filename: String) -> Bool {

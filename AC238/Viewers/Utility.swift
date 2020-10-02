@@ -19,6 +19,9 @@ class Utility: NSObject {
     }()
     
     static func formatSecondsToHMS(_ seconds: Double) -> String {
+        if(seconds.isNaN) {
+            return "00:00"
+        }
         return timeHMSFormatter.string(from: seconds) ?? "00:00"
     }
     

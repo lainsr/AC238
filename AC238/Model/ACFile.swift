@@ -19,7 +19,36 @@ struct ACFile : Hashable, Codable, Identifiable {
     var symbol: String
     var thumbnailName: String
     
+    func suffix() -> String {
+        let filename = name
+        let indexSuffix = filename.lastIndex(of: ".") ?? filename.endIndex
+        let suffix = String(filename[indexSuffix...])
+        return String(suffix.dropFirst())
+    }
     
+    func size() -> String {
+        let imageUrl = ImageStore.loadImageUrl(name: name, path: path)
+        var size = "0 MB"
+        do {
+            let resources = try imageUrl.resourceValues(forKeys:[.fileSizeKey])
+            let fileSize = resources.fileSize!
+            size = convertToFileString(with: fileSize)
+        } catch {
+           print("Error")
+        }
+        return size
+    }
+    
+    func convertToFileString(with size: Int) -> String {
+        var convertedValue: Double = Double(size)
+        var multiplyFactor = 0
+        let tokens = ["bytes", "KB", "MB", "GB", "TB", "PB",  "EB",  "ZB", "YB"]
+        while convertedValue > 1024 {
+            convertedValue /= 1024
+            multiplyFactor += 1
+        }
+        return String(format: "%4.2f %@", convertedValue, tokens[multiplyFactor])
+    }
 }
 
 extension ACFile {

@@ -15,6 +15,8 @@ struct ContentSwitchView: View {
     let directoryPath: String
     let file: ACFile
     
+    @Binding var showScrollingView : Bool
+    
     var body: some View {
         VStack {
             if file.directory {
@@ -22,6 +24,10 @@ struct ContentSwitchView: View {
             } else {
                 ContentSwipeView(contentArray: contentArray, path: directoryPath, start: currentIndex)
             }
+        }
+        .opacity(showScrollingView ? 1.0 : 0.0)
+        .onAppear() {
+            self.showScrollingView = true
         }
     }
     
@@ -33,11 +39,5 @@ struct ContentSwitchView: View {
     func childContentArray() -> [ACFile] {
         let path = childDirectoryPath();
         return SceneDelegate.listFiles(filesOf: path)
-    }
-}
-
-struct ContentSwitchView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentSwitchView(contentArray: contentData, currentIndex: 0, directoryPath: "", file: contentData[0])
     }
 }

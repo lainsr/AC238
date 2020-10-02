@@ -20,10 +20,12 @@ struct ImageView: View {
         ZStack {
             GeometryReader { g in
                 self.image(rect: g.size)
+                    .renderingMode(.original)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .edgesIgnoringSafeArea(.horizontal)
                     .frame(width: g.size.width, height: g.size.height, alignment: .center)
+                    
             }
             VStack {
                 Spacer()

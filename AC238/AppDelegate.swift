@@ -15,9 +15,10 @@ import CoreData
 import Foundation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, GCDWebDAVServerDelegate {
 
-    var davServer : GCDWebDAVServer?;
+    private var davServer : GCDWebDAVServer?
+    private let webdavObserver = WebDAVObserver()
     
     override init() {
         super.init()
@@ -30,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let filemgr = FileManager.default
         if(!filemgr.fileExists(atPath: appSupportDirectory)) {
             do {
-                try filemgr.createDirectory(atPath: appSupportDirectory,withIntermediateDirectories: true, attributes: nil)
+                try filemgr.createDirectory(atPath: appSupportDirectory, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print("Error: \(error.localizedDescription)")
             }
@@ -38,8 +39,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           
         davServer = GCDWebDAVServer(uploadDirectory: appSupportDirectory)
         davServer?.start(withPort: 8080, bonjourName: "AC238")
+        davServer?.delegate = self
 
         return true
+    }
+    
+    //- (void)davServer:(GCDWebDAVServer*)server didUploadFileAtPath:(NSString*)path;
+    func davServer(_ server: GCDWebDAVServer, didUploadFileAtPath path: String) {
+        self.webdavObserver.lastAdditions.append(path)
+    }
+    
+    //- (void)davServer:(GCDWebDAVServer*)server didCreateDirectoryAtPath:(NSString*)path;
+    func davServer(_ server: GCDWebDAVServer, didCreateDirectoryAtPath path: String) {
+        self.webdavObserver.lastAdditions.append(path)
+    }
+    
+    //- (void)davServer:(GCDWebDAVServer*)server didMoveItemFromPath:(NSString*)fromPath toPath:(NSString*)toPath;
+    func davServer(_ server: GCDWebDAVServer, didMoveItemFromPath fromPath: String, toPath: String) {
+        self.webdavObserver.lastRemovals.append(fromPath)
+        self.webdavObserver.lastAdditions.append(toPath)
+    }
+    
+    //- (void)davServer:(GCDWebDAVServer*)server didDeleteItemAtPath:(NSString*)path;
+    func davServer(_ server: GCDWebDAVServer, didDeleteItemAtPath path: String) {
+        self.webdavObserver.lastRemovals.append(path)
+    }
+    
+    func davObserver() -> WebDAVObserver {
+        return webdavObserver
     }
     
     func applicationDocumentsDirectory() -> String {

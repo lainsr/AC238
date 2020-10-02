@@ -15,12 +15,14 @@ struct RootContentList: View {
     let contentName: String
     let directoryPath: String
     let contentArray: [ACFile]
+    let davObserver: WebDAVObserver
     
     var body: some View {
         NavigationView {
             ContentList(contentName: contentName, directoryPath: directoryPath, contentArray: contentArray)
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .environmentObject(davObserver)
         .sheet(isPresented: $showLogin) {
             LoginView(self.$showLogin)
         }
@@ -36,6 +38,6 @@ struct RootContentList: View {
 
 struct RootContentList_Previews: PreviewProvider {
     static var previews: some View {
-        RootContentList(contentName: "Anime", directoryPath: "", contentArray: contentData)
+        RootContentList(contentName: "Anime", directoryPath: "", contentArray: contentData, davObserver: WebDAVObserver())
     }
 }

@@ -18,7 +18,7 @@ struct LoginView: View {
         VStack {
             Spacer()
             HStack {
-                SecureField("Enter a password", text: $password).onChange(of: password, perform: { value in
+                SecureField(LocalizedStringKey("Enter a password"), text: $password).onChange(of: password, perform: { value in
                     if value.count == 4 && value == "1235" {
                         self.showLogin = false
                     }
