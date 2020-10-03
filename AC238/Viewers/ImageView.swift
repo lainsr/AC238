@@ -25,7 +25,6 @@ struct ImageView: View {
                     .aspectRatio(contentMode: .fit)
                     .edgesIgnoringSafeArea(.horizontal)
                     .frame(width: g.size.width, height: g.size.height, alignment: .center)
-                    
             }
             VStack {
                 Spacer()

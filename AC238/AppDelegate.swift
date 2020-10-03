@@ -36,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCDWebDAVServerDelegate {
                 print("Error: \(error.localizedDescription)")
             }
         }
+        
+        // print("Path \(appSupportDirectory)")
           
         davServer = GCDWebDAVServer(uploadDirectory: appSupportDirectory)
         davServer?.start(withPort: 8080, bonjourName: "AC238")

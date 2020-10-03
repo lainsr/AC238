@@ -19,6 +19,14 @@ struct ACFile : Hashable, Codable, Identifiable {
     var symbol: String
     var thumbnailName: String
     
+    func isVideo() -> Bool {
+        return name.hasSuffix(".mp4") || name.hasSuffix(".m4v")
+    }
+    
+    func isImage() -> Bool {
+        
+    }
+    
     func suffix() -> String {
         let filename = name
         let indexSuffix = filename.lastIndex(of: ".") ?? filename.endIndex
