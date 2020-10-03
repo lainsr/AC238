@@ -43,7 +43,7 @@ class VideoPlayerUIView: UIView {
         
         // Observe the player's time periodically so we can update the seek bar's
         // position as we progress through playback
-        timeObservation = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 600), queue: nil) { [weak self] time in
+        timeObservation = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 1000), queue: nil) { [weak self] time in
             guard let self = self else { return }
             // If we're not seeking currently (don't want to override the slider
             // position if the user is interacting)
@@ -119,23 +119,62 @@ struct VideoPlayerControlsView : View {
     @State private var playerPaused = true
     
     var body: some View {
-        HStack {
-            // Play/pause button
-            Button(action: togglePlayPause) {
-                Image(systemName: playerPaused ? "play" : "pause")
-                    .padding(.trailing, 10)
+        VStack {
+            HStack {
+                Button(action: previous10Seconds) {
+                    Image(systemName: "gobackward.10")
+                        .font(.largeTitle)
+                }
+                .padding(EdgeInsets(top: 0, leading: 30, bottom: 10, trailing: 10))
+                Spacer()
+                Button(action: next10Seconds) {
+                    Image(systemName: "goforward.10")
+                        .font(.largeTitle)
+                }
+                .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 30))
             }
-            // Current video time
-            Text("\(Utility.formatSecondsToHMS(videoPos * videoDuration))")
-            // Slider for seeking / showing video progress
-            Slider(value: $videoPos, in: 0...1, onEditingChanged: sliderEditingChanged)
-            // Video duration
-            Text("\(Utility.formatSecondsToHMS(videoDuration))")
+            HStack {
+                // Play/pause button
+                Button(action: togglePlayPause) {
+                    Image(systemName: playerPaused ? "play" : "pause")
+                        .font(.title3)
+                        .frame(width: 24, height: 24, alignment: .leading)
+                }
+                .fixedSize(horizontal: true, vertical: false)
+                .padding(EdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 0))
+                // Current video time
+                Text("\(Utility.formatSecondsToHMS(videoPos * videoDuration))")
+                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(width: 60, height: 24, alignment: .leading)
+                // Slider for seeking / showing video progress
+                Slider(value: $videoPos, in: 0...1, onEditingChanged: sliderEditingChanged)
+                // Video duration
+                Text("\(Utility.formatSecondsToHMS(videoDuration))")
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 7))
+            }
+            .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+            .background(Color.white)
+            .cornerRadius(13)
+            .shadow(radius: 5.0)
         }
-        .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-        .background(Color.white)
-        .cornerRadius(13)
-        .shadow(radius: 5.0)
+    }
+    
+    private func next10Seconds() {
+        seek(seconds: 10.0)
+    }
+    
+    private func previous10Seconds() {
+        seek(seconds: -10.0)
+    }
+    
+    private func seek(seconds: Double) {
+        let currentTime = player.currentTime()
+        var nextSeconds = currentTime.seconds + seconds
+        if nextSeconds < 0 {
+            nextSeconds = 0
+        }
+        let nextTime = CMTime(seconds: nextSeconds, preferredTimescale: 1000)
+        player.seek(to: nextTime)
     }
     
     private func togglePlayPause() {

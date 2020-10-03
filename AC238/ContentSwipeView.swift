@@ -37,13 +37,8 @@ struct ContentSwipeView: View {
             ScrollView(.horizontal, showsIndicators: true) {
                 HStack(alignment: .top, spacing: 10) {
                     ForEach(self.partialContentArray) { contentFile in
-                        if contentFile.name.hasSuffix(".mp4") || contentFile.name.hasSuffix(".m4v") {
-                            VideoView(file: contentFile, path: self.path)
-                                .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
-                        } else {
-                            ImageView(file: contentFile, path: self.path)
-                                .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
-                        }
+                        ImageView(file: contentFile, path: self.path)
+                            .frame(width: g.size.width, height: g.size.height, alignment: .topLeading)
                     }
                 }
             }

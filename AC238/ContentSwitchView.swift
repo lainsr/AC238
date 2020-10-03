@@ -20,14 +20,16 @@ struct ContentSwitchView: View {
         VStack {
             if file.directory {
                 ContentList(contentName: file.name, directoryPath: childDirectoryPath(), contentArray: childContentArray())
+            } else if file.isVideo() {
+                VideoView(file: file, path: directoryPath)
             } else {
                 ContentSwipeView(contentArray: contentArray, path: directoryPath, start: file)
-            }
-        }
-        .opacity(showScrollingView ? 1.0 : 0.0)
-        .onAppear() {
-            if(!self.showScrollingView) {
-                self.showScrollingView = true
+                    .opacity(showScrollingView ? 1.0 : 0.0)
+                    .onAppear() {
+                        if(!self.showScrollingView) {
+                            self.showScrollingView = true
+                        }
+                    }
             }
         }
     }
