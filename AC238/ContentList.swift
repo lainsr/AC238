@@ -19,7 +19,7 @@ struct ContentList: View {
     
     var body: some View {
         List(contentArray, id: \.id) { contentFile in
-            NavigationLink(destination: ContentSwitchView(contentArray: self.contentArray, currentIndex: contentFile.id, directoryPath: self.directoryPath, file: contentFile, showScrollingView: $showScrollingView)) {
+            NavigationLink(destination: ContentSwitchView(contentArray: self.contentArray, directoryPath: self.directoryPath, file: contentFile, showScrollingView: $showScrollingView)) {
                 ContentRow(file: contentFile).onAppear() {
                     if(self.showScrollingView) {
                         self.showScrollingView = false

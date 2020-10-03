@@ -11,7 +11,6 @@ import SwiftUI
 struct ContentSwitchView: View {
     
     let contentArray: [ACFile]
-    let currentIndex: Int
     let directoryPath: String
     let file: ACFile
     
@@ -22,7 +21,7 @@ struct ContentSwitchView: View {
             if file.directory {
                 ContentList(contentName: file.name, directoryPath: childDirectoryPath(), contentArray: childContentArray())
             } else {
-                ContentSwipeView(contentArray: contentArray, path: directoryPath, start: currentIndex)
+                ContentSwipeView(contentArray: contentArray, path: directoryPath, start: file)
             }
         }
         .opacity(showScrollingView ? 1.0 : 0.0)

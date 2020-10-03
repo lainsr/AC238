@@ -17,9 +17,10 @@ struct ContentSwipeView: View {
     let contentArray: [ACFile]
     let path: String
     let spacing: CGFloat = 10
-    var firstIndex: Int
+    var firstFile: ACFile
+
     
-    init(contentArray files: [ACFile], path: String, start firstIndex: Int) {
+    init(contentArray files: [ACFile], path: String, start firstFile: ACFile) {
         var filterContentArray = [ACFile]()
         for file in files {
             if !file.directory {
@@ -28,7 +29,7 @@ struct ContentSwipeView: View {
         }
         self.path = path
         self.contentArray = filterContentArray
-        self.firstIndex = filterContentArray.firstIndex(of: files[firstIndex]) ?? 0
+        self.firstFile = firstFile
     }
     
     var body: some View {
@@ -67,7 +68,7 @@ struct ContentSwipeView: View {
                     })
             )
             .onAppear() {
-                self.index = self.firstIndex
+                self.index = self.contentArray.firstIndex(of: firstFile) ?? 0
                 self.filename = self.contentArray[self.index].name
                 var pageWidth:CGFloat
                 if g.size.width == 0 {
@@ -81,8 +82,10 @@ struct ContentSwipeView: View {
     }
 }
 
+/*
 struct ContentSwipeView_Previews: PreviewProvider {
     static var previews: some View {
         ContentSwipeView(contentArray: contentData, path: "", start: 0)
     }
 }
+*/
