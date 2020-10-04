@@ -171,7 +171,7 @@ struct VideoPlayerControlsView : View {
     private func goto(percent: Double) {
         var nextSeconds : Double
         if percent > 0.0 {
-            nextSeconds = videoDuration / percent
+            nextSeconds = videoDuration * percent
         } else {
             nextSeconds = 0;
         }
