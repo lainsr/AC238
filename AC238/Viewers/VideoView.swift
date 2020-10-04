@@ -120,6 +120,7 @@ struct VideoPlayerControlsView : View {
     
     var body: some View {
         VStack {
+            Spacer()
             HStack {
                 Button(action: previous10Seconds) {
                     Image(systemName: "gobackward.10")
@@ -147,7 +148,14 @@ struct VideoPlayerControlsView : View {
                     .fixedSize(horizontal: true, vertical: false)
                     .frame(width: 60, height: 24, alignment: .leading)
                 // Slider for seeking / showing video progress
-                Slider(value: $videoPos, in: 0...1, onEditingChanged: sliderEditingChanged)
+                GeometryReader { sliderGeo in
+                    Slider(value: $videoPos, in: 0...1, onEditingChanged: sliderEditingChanged)
+                        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: CoordinateSpace.local)
+                            .onEnded({ value in
+                                let percent = min(max(0, Double(value.location.x / sliderGeo.size.width * 1)), 1)
+                                self.videoPos = percent
+                        }))
+                }.frame(width: nil, height: 32, alignment: .center)
                 // Video duration
                 Text("\(Utility.formatSecondsToHMS(videoDuration))")
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 7))
