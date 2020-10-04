@@ -31,6 +31,9 @@ struct ContentList: View {
         }
         .navigationBarTitle(Text(contentName))
         .navigationViewStyle(StackNavigationViewStyle())
+        .navigationBarItems(trailing: NavigationLink(destination: SlideShowView(contentArray: contentArray)) {
+            Image(systemName: "play.circle")
+        })
         .onChange(of: davObserver.lastAdditions, perform: { value in
             processDAVAdditions(additions: value)
         })

@@ -154,6 +154,7 @@ struct VideoPlayerControlsView : View {
                             .onEnded({ value in
                                 let percent = min(max(0, Double(value.location.x / sliderGeo.size.width * 1)), 1)
                                 self.videoPos = percent
+                                goto(percent: percent)
                         }))
                 }.frame(width: nil, height: 32, alignment: .center)
                 // Video duration
@@ -165,6 +166,17 @@ struct VideoPlayerControlsView : View {
             .cornerRadius(13)
             .shadow(radius: 5.0)
         }
+    }
+    
+    private func goto(percent: Double) {
+        var nextSeconds : Double
+        if percent > 0.0 {
+            nextSeconds = videoDuration / percent
+        } else {
+            nextSeconds = 0;
+        }
+        let nextTime = CMTime(seconds: nextSeconds, preferredTimescale: 1000)
+        player.seek(to: nextTime)
     }
     
     private func next10Seconds() {
