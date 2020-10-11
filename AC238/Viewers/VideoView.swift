@@ -110,9 +110,16 @@ struct VideoPlayerView: UIViewRepresentable {
 
 // This is the SwiftUI view that contains the controls for the player
 struct VideoPlayerControlsView : View {
+    
+    private let fontColor = Color(red: 225 / 255, green: 225 / 255, blue: 225 / 255)
+    private let backgroundColor = Color(red: 75 / 255, green: 75 / 255, blue: 75 / 255)
     @Binding private(set) var videoPos: Double
     @Binding private(set) var videoDuration: Double
     @Binding private(set) var seeking: Bool
+    // Whether the video controls are showned or not
+    @Binding private(set) var showControls : Bool
+    // List of the tasks to hide the controls after 5 seconds
+    @Binding private(set) var queuedHideTask : [DispatchWorkItem]
     
     let player: AVPlayer
     
@@ -163,6 +170,7 @@ struct VideoPlayerControlsView : View {
                                 self.videoPos = percent
                                 goto(percent: percent)
                         }))
+                        .accentColor(fontColor)
                 }.frame(width: nil, height: 32, alignment: .center)
                 // Video duration
                 Text("\(Utility.formatSecondsToHMS(videoDuration))")
@@ -171,9 +179,10 @@ struct VideoPlayerControlsView : View {
             }
         }
         .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-        .background(Color.white)
+        .background(backgroundColor)
+        .foregroundColor(fontColor)
+        .opacity(0.8)
         .cornerRadius(13)
-        .shadow(radius: 5.0)
     }
     
     private func goto(percent: Double) {
@@ -211,6 +220,7 @@ struct VideoPlayerControlsView : View {
         }
         let nextTime = CMTime(seconds: nextSeconds, preferredTimescale: 1000)
         player.seek(to: nextTime)
+        cancelHideTasks()
     }
     
     private func togglePlayPause() {
@@ -224,6 +234,7 @@ struct VideoPlayerControlsView : View {
         } else {
             player.play()
         }
+        cancelHideTasks()
     }
     
     private func sliderEditingChanged(editingStarted: Bool) {
@@ -244,6 +255,21 @@ struct VideoPlayerControlsView : View {
                 self.pausePlayer(false)
             }
         }
+        
+        cancelHideTasks()
+    }
+    
+    private func cancelHideTasks() {
+        for hideTask in queuedHideTask {
+            hideTask.cancel()
+        }
+        self.queuedHideTask.removeAll()
+        
+        let task = DispatchWorkItem {
+            self.showControls = false
+        }
+        self.queuedHideTask.append(task)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: task)
     }
 }
 
@@ -255,8 +281,10 @@ struct VideoPlayerContainerView : View {
     @State private var videoDuration: Double = 0
     // Whether we're currently interacting with the seek bar or doing a seek
     @State private var seeking = false
-    
+    // Whether the video controls are showned or not
     @State private var showControls = true
+    // List of the tasks to hide the controls after 5 seconds
+    @State private var queuedHideTask = [DispatchWorkItem]()
     
     private let player: AVPlayer
   
@@ -278,21 +306,40 @@ struct VideoPlayerContainerView : View {
                 VideoPlayerControlsView(videoPos: $videoPos,
                                         videoDuration: $videoDuration,
                                         seeking: $seeking,
+                                        showControls: $showControls,
+                                        queuedHideTask: $queuedHideTask,
                                         player: player)
                 .padding()
             }
             .opacity(showControls ? 1.0 : 0.0)
             .animation(.easeInOut)
-            
         }
-        .onTapGesture {
-            self.showControls.toggle()
+        .onAppear {
+            queueHideControls();
         }
         .onDisappear {
             // When this View isn't being shown anymore stop the player
             self.player.replaceCurrentItem(with: nil)
         }
+        .onTapGesture {
+            self.showControls.toggle()
+            if(self.showControls) {
+                queueHideControls();
+            }
+        }
+    }
     
+    private func queueHideControls() {
+        for hideTask in queuedHideTask {
+            hideTask.cancel()
+        }
+        self.queuedHideTask.removeAll()
+        
+        let task = DispatchWorkItem {
+            self.showControls = false
+        }
+        self.queuedHideTask.append(task)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: task)
     }
 }
 
