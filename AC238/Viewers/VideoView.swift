@@ -120,33 +120,40 @@ struct VideoPlayerControlsView : View {
     
     var body: some View {
         VStack {
-            Spacer()
             HStack {
                 Button(action: previous10Seconds) {
                     Image(systemName: "gobackward.10")
-                        .font(.largeTitle)
+                        .font(.title)
                 }
-                .padding(EdgeInsets(top: 0, leading: 30, bottom: 10, trailing: 10))
+                Button(action: previous30Seconds) {
+                    Image(systemName: "gobackward.30")
+                        .font(.title)
+                }
+                .padding(EdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 0))
                 Spacer()
-                Button(action: next10Seconds) {
-                    Image(systemName: "goforward.10")
-                        .font(.largeTitle)
-                }
-                .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 30))
-            }
-            HStack {
                 // Play/pause button
                 Button(action: togglePlayPause) {
                     Image(systemName: playerPaused ? "play" : "pause")
-                        .font(.title3)
-                        .frame(width: 24, height: 24, alignment: .leading)
+                        .font(.largeTitle)
                 }
-                .fixedSize(horizontal: true, vertical: false)
-                .padding(EdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 0))
+                Spacer()
+                Button(action: next30Seconds) {
+                    Image(systemName: "goforward.30")
+                        .font(.title)
+                }
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 7))
+                Button(action: next10Seconds) {
+                    Image(systemName: "goforward.10")
+                        .font(.title)
+                }
+            }
+            .padding(EdgeInsets(top: 7, leading: 7, bottom: 0, trailing: 7))
+            HStack {
                 // Current video time
                 Text("\(Utility.formatSecondsToHMS(videoPos * videoDuration))")
                     .fixedSize(horizontal: true, vertical: false)
                     .frame(width: 60, height: 24, alignment: .leading)
+                    .padding(EdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 0))
                 // Slider for seeking / showing video progress
                 GeometryReader { sliderGeo in
                     Slider(value: $videoPos, in: 0...1, onEditingChanged: sliderEditingChanged)
@@ -159,13 +166,14 @@ struct VideoPlayerControlsView : View {
                 }.frame(width: nil, height: 32, alignment: .center)
                 // Video duration
                 Text("\(Utility.formatSecondsToHMS(videoDuration))")
+                    .frame(width: 60, height: 24, alignment: .trailing)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 7))
             }
-            .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-            .background(Color.white)
-            .cornerRadius(13)
-            .shadow(radius: 5.0)
         }
+        .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+        .background(Color.white)
+        .cornerRadius(13)
+        .shadow(radius: 5.0)
     }
     
     private func goto(percent: Double) {
@@ -183,8 +191,16 @@ struct VideoPlayerControlsView : View {
         seek(seconds: 10.0)
     }
     
+    private func next30Seconds() {
+        seek(seconds: 30.0)
+    }
+    
     private func previous10Seconds() {
         seek(seconds: -10.0)
+    }
+    
+    private func previous30Seconds() {
+        seek(seconds: -30.0)
     }
     
     private func seek(seconds: Double) {

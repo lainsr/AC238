@@ -53,9 +53,11 @@ final class ImageStore {
     }
     
     fileprivate func _guaranteeImage(name: String, path directory: String) -> _ImageDictionary.Index {
-        if let index = images.index(forKey: name) { return index }
+        let key = name + "|" + directory;
         
-        images[name] = ImageStore.loadImage(name: name, path: directory)
-        return images.index(forKey: name)!
+        if let index = images.index(forKey: key) { return index }
+        
+        images[key] = ImageStore.loadImage(name: name, path: directory)
+        return images.index(forKey: key)!
     }
 }
