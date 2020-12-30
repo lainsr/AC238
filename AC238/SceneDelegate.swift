@@ -74,10 +74,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         var symboleName: String = ""
         var thumbnailName: String = ""
         var isDirectory = false
-        
-        if fileName.hasSuffix(".jpg") || fileName.hasSuffix(".jpeg") || fileName.hasSuffix(".png") {
+
+        if ACFile.hasImageSuffix(filename: fileName) {
             thumbnailName = fileName
-        } else if fileName.hasSuffix(".mp4") || fileName.hasSuffix(".m4v") {
+        } else if ACFile.hasVideoSuffix(filename: fileName) {
             symboleName = "video"
         } else if(directoryExistsAtPath(directory, file: fileName)) {
             symboleName = "folder"

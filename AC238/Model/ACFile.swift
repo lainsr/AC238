@@ -20,13 +20,11 @@ struct ACFile : Hashable, Codable, Identifiable {
     var thumbnailName: String
     
     func isVideo() -> Bool {
-        let lowerName = name.lowercased()
-        return lowerName.hasSuffix(".mp4") || lowerName.hasSuffix(".m4v")
+        return ACFile.hasVideoSuffix(filename: name)
     }
-    
+
     func isImage() -> Bool {
-        let lowerName = name.lowercased()
-        return lowerName.hasSuffix(".jpg") || lowerName.hasSuffix(".jpeg") || lowerName.hasSuffix(".png")
+        return ACFile.hasImageSuffix(filename: name)
     }
     
     func suffix() -> String {
@@ -58,6 +56,16 @@ struct ACFile : Hashable, Codable, Identifiable {
             multiplyFactor += 1
         }
         return String(format: "%4.2f %@", convertedValue, tokens[multiplyFactor])
+    }
+    
+    static func hasImageSuffix(filename: String) -> Bool {
+        let lowerName = filename.lowercased()
+        return lowerName.hasSuffix(".jpg") || lowerName.hasSuffix(".jpeg") || lowerName.hasSuffix(".png")
+    }
+    
+    static func hasVideoSuffix(filename: String) -> Bool {
+        let lowerName = filename.lowercased()
+        return lowerName.hasSuffix(".mp4") || lowerName.hasSuffix(".m4v") || lowerName.hasSuffix(".mov")
     }
 }
 
