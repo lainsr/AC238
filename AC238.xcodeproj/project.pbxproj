@@ -702,7 +702,7 @@
 				DEVELOPMENT_TEAM = M8P4XF8733;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AC238/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -724,7 +724,7 @@
 				DEVELOPMENT_TEAM = M8P4XF8733;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AC238/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
