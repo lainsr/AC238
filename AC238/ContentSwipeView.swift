@@ -24,15 +24,9 @@ struct ContentSwipeView: View {
     private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
     init(contentArray files: [ACFile], path: String, start firstFile: ACFile, slide: Bool) {
-        var filterContentArray = [ACFile]()
-        for file in files {
-            if file.isImage() {
-                filterContentArray.append(file)
-            }
-        }
         self.slide = slide
         self.path = path
-        self.fullContentArray = filterContentArray
+        self.fullContentArray = files.filter{$0.isImage()}
         self.firstFile = firstFile
         if !self.slide {
             timer.upstream.connect().cancel()

@@ -35,7 +35,7 @@ struct ContentList: View {
         .navigationBarItems(trailing: NavigationLink(destination: getSlideShowDestination()) {
                 Image(systemName: "play.circle")
             }
-            .opacity(contentArray.count == 0 ? 0.0 : 1.0)
+            .opacity(contentArray.first{$0.isImage()} == nil ? 0.0 : 1.0)
         )
         .onChange(of: davObserver.lastAdditions, perform: { value in
             processDAVAdditions(additions: value)
@@ -46,7 +46,8 @@ struct ContentList: View {
     }
     
     func getSlideShowDestination() -> AnyView {
-        if contentArray.count == 0 {
+        let firstImage = contentArray.first{$0.isImage()}
+        if firstImage == nil {
             return AnyView(Text("Empty"))
         }
         return AnyView(SlideShowView(contentArray: contentArray, directoryPath: self.directoryPath))
