@@ -103,19 +103,16 @@ struct ContentSwipeView: View {
                     startIndex = 0
                 }
                 var endIndex = fileIndex + 2
-                if endIndex >= fullContentArray.count {
-                    endIndex = fullContentArray.count - 1
-                }
-                var maxLength = fullContentArray.count - 5
-                if maxLength < 0 {
-                    maxLength = 0
+                if endIndex > fullContentArray.count {
+                    endIndex = fullContentArray.count
                 }
                 
                 for n in startIndex..<endIndex {
                     self.partialContentArray.append(fullContentArray[n])
                 }
                 
-                self.index = self.partialContentArray.firstIndex(of: firstFile) ?? 0
+                let partialIndex = self.partialContentArray.firstIndex(of: firstFile) ?? 0
+                self.index = partialIndex
                 self.filename = self.firstFile.name
                 var pageWidth:CGFloat
                 if g.size.width == 0 {

@@ -29,6 +29,7 @@ struct ContentList: View {
             }
             .id("link-" + contentFile.name)
         }
+        .listStyle(PlainListStyle())
         .navigationBarTitle(Text(contentName))
         .navigationViewStyle(StackNavigationViewStyle())
         .navigationBarItems(trailing: NavigationLink(destination: SlideShowView(contentArray: contentArray)) {
