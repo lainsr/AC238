@@ -10,10 +10,14 @@ import SwiftUI
 
 struct SlideShowView: View {
     
-    let contentArray: [ACFile]
-    //@State var currentImage: ACFile
+    @State private var showScrollingView = true
     
-    init(contentArray: [ACFile]) {
+    let contentArray: [ACFile]
+    let directoryPath: String
+    @State private var currentIndex: Int = 0
+    @State var contentFile: ACFile
+    
+    init(contentArray: [ACFile], directoryPath: String) {
         var images = [ACFile]()
         for content in contentArray {
             if content.isImage() {
@@ -21,11 +25,12 @@ struct SlideShowView: View {
             }
         }
         self.contentArray = images
-        //self.currentImage = images.first!
+        self.contentFile = images.first!
+        self.directoryPath = directoryPath
     }
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ContentSwipeView(contentArray: self.contentArray, path: self.directoryPath, start: self.contentFile, slide: true)
     }
 }
 

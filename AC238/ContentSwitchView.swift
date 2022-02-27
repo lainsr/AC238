@@ -23,7 +23,7 @@ struct ContentSwitchView: View {
             } else if file.isVideo() {
                 VideoView(file: file, path: directoryPath)
             } else {
-                ContentSwipeView(contentArray: contentArray, path: directoryPath, start: file)
+                ContentSwipeView(contentArray: contentArray, path: directoryPath, start: file, slide: false)
                     .opacity(showScrollingView ? 1.0 : 0.0)
                     .onAppear() {
                         if(!self.showScrollingView) {

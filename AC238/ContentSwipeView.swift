@@ -14,22 +14,29 @@ struct ContentSwipeView: View {
     @State private var index = 0
     @State private var filename : String = ""
     
+    @State private var slide: Bool
     let fullContentArray: [ACFile]
     let path: String
     let spacing: CGFloat = 10
     var firstFile: ACFile
     @State var partialContentArray: [ACFile] = [ACFile]()
     
-    init(contentArray files: [ACFile], path: String, start firstFile: ACFile) {
+    private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+    
+    init(contentArray files: [ACFile], path: String, start firstFile: ACFile, slide: Bool) {
         var filterContentArray = [ACFile]()
         for file in files {
             if file.isImage() {
                 filterContentArray.append(file)
             }
         }
+        self.slide = slide
         self.path = path
         self.fullContentArray = filterContentArray
         self.firstFile = firstFile
+        if !self.slide {
+            timer.upstream.connect().cancel()
+        }
     }
     
     var body: some View {
@@ -52,47 +59,17 @@ struct ContentSwipeView: View {
                     .onEnded({ value in
                         if -value.predictedEndTranslation.width > g.size.width / 2, self.index < self.partialContentArray.count - 1 {
                             self.index += 1
-                            
-                        }
-                        if value.predictedEndTranslation.width > g.size.width / 2, self.index > 0 {
+                        } else if value.predictedEndTranslation.width > g.size.width / 2, self.index > 0 {
                             self.index -= 1
                         }
                         self.filename = self.partialContentArray[self.index].name
-                        
                         
                         withAnimation(.easeOut(duration: 0.3)) {
                             self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
                         }
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            if self.index + 2 >= self.partialContentArray.count {
-                                if let lastItem = self.partialContentArray.last {
-                                    if let nextIndex = fullContentArray.firstIndex(of: lastItem) {
-                                        if nextIndex + 1 < fullContentArray.count {
-                                            self.partialContentArray.append(fullContentArray[nextIndex + 1])
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            if self.index < 2 {
-                                if let firstItem = self.partialContentArray.first {
-                                    if let nextIndex = fullContentArray.firstIndex(of: firstItem) {
-                                        if nextIndex - 1 >= 0 {
-                                            self.partialContentArray.insert(fullContentArray[nextIndex - 1], at: 0)
-                                            self.index += 1
-                                            self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
-                                        }
-                                    }
-                                }
-                            } else if self.index > 3 {
-                                self.partialContentArray.removeFirst()
-                                self.index -= 1
-                                self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
-                            } else if self.partialContentArray.count > 7 {
-                                let numToRemove = self.partialContentArray.count - 7
-                                self.partialContentArray.removeLast(numToRemove)
-                            }
+                            reflowPartialContentArray(gWidth: g.size.width)
                         }
                     })
             )
@@ -121,7 +98,60 @@ struct ContentSwipeView: View {
                     pageWidth = g.size.width
                 }
                 self.offset =  -(pageWidth + self.spacing) * CGFloat(self.index)
+            }.onReceive(timer, perform: { _ in
+                if self.slide {
+                    slideNext(gWidth: g.size.width)
+                }
+            }).onDisappear() {
+                self.slide = false
             }
+        }
+    }
+    
+    private func slideNext(gWidth: CGFloat) {
+        self.index += 1
+        if self.index >= self.partialContentArray.count {
+            self.index = 0
+        }
+        self.filename = self.partialContentArray[self.index].name
+        
+        withAnimation(.easeOut(duration: 0.3)) {
+            self.offset = -(gWidth + self.spacing) * CGFloat(self.index)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            reflowPartialContentArray(gWidth: gWidth)
+        }
+    }
+    
+    private func reflowPartialContentArray(gWidth: CGFloat) {
+        if self.index + 2 >= self.partialContentArray.count {
+            if let lastItem = self.partialContentArray.last {
+                if let nextIndex = fullContentArray.firstIndex(of: lastItem) {
+                    if nextIndex + 1 < fullContentArray.count {
+                        self.partialContentArray.append(fullContentArray[nextIndex + 1])
+                    }
+                }
+            }
+        }
+        
+        if self.index < 2 {
+            if let firstItem = self.partialContentArray.first {
+                if let nextIndex = fullContentArray.firstIndex(of: firstItem) {
+                    if nextIndex - 1 >= 0 {
+                        self.partialContentArray.insert(fullContentArray[nextIndex - 1], at: 0)
+                        self.index += 1
+                        self.offset = -(gWidth + self.spacing) * CGFloat(self.index)
+                    }
+                }
+            }
+        } else if self.index > 3 {
+            self.partialContentArray.removeFirst()
+            self.index -= 1
+            self.offset = -(gWidth + self.spacing) * CGFloat(self.index)
+        } else if self.partialContentArray.count > 7 {
+            let numToRemove = self.partialContentArray.count - 7
+            self.partialContentArray.removeLast(numToRemove)
         }
     }
 }

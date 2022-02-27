@@ -32,15 +32,24 @@ struct ContentList: View {
         .listStyle(PlainListStyle())
         .navigationBarTitle(Text(contentName))
         .navigationViewStyle(StackNavigationViewStyle())
-        .navigationBarItems(trailing: NavigationLink(destination: SlideShowView(contentArray: contentArray)) {
-            Image(systemName: "play.circle")
-        })
+        .navigationBarItems(trailing: NavigationLink(destination: getSlideShowDestination()) {
+                Image(systemName: "play.circle")
+            }
+            .opacity(contentArray.count == 0 ? 0.0 : 1.0)
+        )
         .onChange(of: davObserver.lastAdditions, perform: { value in
             processDAVAdditions(additions: value)
         })
         .onChange(of: davObserver.lastRemovals, perform: { value in
             processDAVRemovals(removals: value)
         })
+    }
+    
+    func getSlideShowDestination() -> AnyView {
+        if contentArray.count == 0 {
+            return AnyView(Text("Empty"))
+        }
+        return AnyView(SlideShowView(contentArray: contentArray, directoryPath: self.directoryPath))
     }
     
     func processDAVRemovals(removals: [String]) {
