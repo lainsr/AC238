@@ -22,6 +22,9 @@ struct ContentSwipeView: View {
     @State var partialContentArray: [ACFile] = [ACFile]()
     
     private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+    private let orientationChanged = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+        .makeConnectable()
+        .autoconnect()
     
     init(contentArray files: [ACFile], path: String, start firstFile: ACFile, slide: Bool) {
         var filterContentArray = [ACFile]()
@@ -63,6 +66,7 @@ struct ContentSwipeView: View {
                             self.index -= 1
                         }
                         self.filename = self.partialContentArray[self.index].name
+                        print("Swip width: ", g.size.width, " x ", g.size.height)
                         
                         withAnimation(.easeOut(duration: 0.3)) {
                             self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
@@ -102,7 +106,15 @@ struct ContentSwipeView: View {
                 if self.slide {
                     slideNext(gWidth: g.size.width)
                 }
-            }).onDisappear() {
+            }).onReceive(orientationChanged) {_ in
+                
+                // Doesn't work
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    withAnimation(.easeOut(duration: 0.3)) {
+                        self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
+                    }
+                }
+            }.onDisappear() {
                 self.slide = false
             }
         }

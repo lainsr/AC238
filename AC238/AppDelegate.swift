@@ -37,7 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCDWebDAVServerDelegate {
             }
         }
         
+        #if DEBUG
         print("Path \(appSupportDirectory)")
+        #endif
           
         davServer = GCDWebDAVServer(uploadDirectory: appSupportDirectory)
         davServer?.start(withPort: 8080, bonjourName: "AC238")

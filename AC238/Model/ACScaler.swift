@@ -15,6 +15,9 @@ final class ImageScaler {
     
     static var shared = ImageScaler()
     
+    private static let bitmapInfo =
+            CGBitmapInfo.byteOrder32Big.rawValue |
+            CGImageAlphaInfo.premultipliedLast.rawValue & CGBitmapInfo.alphaInfoMask.rawValue
     
     static func scale(_ image:UIImage, toSize newSize: CGSize, transformed with: Int, oriented deviceOrientation: UIDeviceOrientation) -> UIImage {
         
@@ -100,7 +103,7 @@ final class ImageScaler {
         let context = CGContext(data: nil, width: Int(scaledWidth), height: Int(scaledHeight),
                                 bitsPerComponent: refImage.bitsPerComponent, bytesPerRow: refImage.bytesPerRow,
                                 space: refImage.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!,
-                                bitmapInfo: refImage.bitmapInfo.rawValue)
+                                bitmapInfo: bitmapInfo)
 
         let flip = false
         let scaledSize = CGSize(width: scaledWidth, height: scaledHeight)
