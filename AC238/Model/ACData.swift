@@ -43,7 +43,7 @@ final class ImageStore {
     
     static func loadImageUrl(name: String, path directory: String) -> URL {
         let imageUrl: URL
-        if name.hasSuffix(".jpg") || name.hasSuffix(".jpeg") || name.hasSuffix(".png") {
+        if ACFile.hasImageSuffix(filename: name) {
             let filePath = directory + "/" + name
             imageUrl = URL(fileURLWithPath: filePath)
         } else {

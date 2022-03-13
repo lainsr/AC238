@@ -60,8 +60,7 @@ struct ContentSwipeView: View {
                             self.index -= 1
                         }
                         self.filename = self.partialContentArray[self.index].name
-                        print("Swip width: ", g.size.width, " x ", g.size.height)
-                        
+                       
                         withAnimation(.easeOut(duration: 0.3)) {
                             self.offset = -(g.size.width + self.spacing) * CGFloat(self.index)
                         }

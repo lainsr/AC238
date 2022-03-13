@@ -60,7 +60,7 @@ struct ACFile : Hashable, Codable, Identifiable {
     
     static func hasImageSuffix(filename: String) -> Bool {
         let lowerName = filename.lowercased()
-        return lowerName.hasSuffix(".jpg") || lowerName.hasSuffix(".jpeg") || lowerName.hasSuffix(".png")
+        return lowerName.hasSuffix(".jpg") || lowerName.hasSuffix(".jpeg") || lowerName.hasSuffix(".png") || lowerName.hasSuffix(".heic") || lowerName.hasSuffix(".tiff")
     }
     
     static func hasVideoSuffix(filename: String) -> Bool {

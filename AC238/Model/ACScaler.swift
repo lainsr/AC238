@@ -15,9 +15,12 @@ final class ImageScaler {
     
     static var shared = ImageScaler()
     
-    private static let bitmapInfo =
+    private static let bitmapAlphaInfo =
             CGBitmapInfo.byteOrder32Big.rawValue |
             CGImageAlphaInfo.premultipliedLast.rawValue & CGBitmapInfo.alphaInfoMask.rawValue
+    
+    private static let genericGrayName = String(cString: "kCGColorSpaceGenericGray", encoding: .utf8)! as CFString
+    private static let genericGray = CGColorSpace(name: genericGrayName)
     
     static func scale(_ image:UIImage, toSize newSize: CGSize, transformed with: Int, oriented deviceOrientation: UIDeviceOrientation) -> UIImage {
         
@@ -98,12 +101,18 @@ final class ImageScaler {
         if(scaledHeight < 1) {
             scaledHeight = 1
         }
-        
-        let refImage = image.cgImage!;
+
+        let refImage = image.cgImage!
+        let colorSpace = colorSpace(image: refImage)
+        var bytesPerRow = refImage.bytesPerRow
+        if bytesPerRow % 4 != 0 {
+            bytesPerRow = 0;
+        }
+        let bitmapInfo = bitmapInfo(colorSpace: colorSpace)
+
         let context = CGContext(data: nil, width: Int(scaledWidth), height: Int(scaledHeight),
-                                bitsPerComponent: refImage.bitsPerComponent, bytesPerRow: refImage.bytesPerRow,
-                                space: refImage.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!,
-                                bitmapInfo: bitmapInfo)
+                                bitsPerComponent: refImage.bitsPerComponent, bytesPerRow: bytesPerRow,
+                                space: colorSpace, bitmapInfo: bitmapInfo)
 
         let flip = false
         let scaledSize = CGSize(width: scaledWidth, height: scaledHeight)
@@ -127,6 +136,22 @@ final class ImageScaler {
         return UIImage()
     }
     
+    static func bitmapInfo(colorSpace: CGColorSpace) -> UInt32 {
+        if colorSpace.name == CGColorSpace.genericGrayGamma2_2 || colorSpace.name == genericGray?.name {
+            return CGImageAlphaInfo.none.rawValue
+        }
+        return bitmapAlphaInfo
+    }
+    
+    static func colorSpace(image: CGImage) -> CGColorSpace {
+        if let colorSpace = image.colorSpace {
+            if colorSpace.supportsOutput {
+                return colorSpace
+            }
+        }
+        return CGColorSpace(name: CGColorSpace.sRGB)!;
+    }
+    
     static func transformForOrientation(_ newSize: CGSize, of image: UIImage, flipImage flip: Bool) -> CGAffineTransform {
         var transform = CGAffineTransform.identity
         
@@ -146,55 +171,7 @@ final class ImageScaler {
         } else if imageOrientation == UIImage.Orientation.up || imageOrientation == UIImage.Orientation.upMirrored {
             //do nothing
         }
-        
-        /*
-        if(flip) {
-            switch (image.imageOrientation) {
-                case UIImageOrientationUp:            // EXIF = 1
-                case UIImageOrientationDown:          // EXIF = 3
-                    transform = CGAffineTransformTranslate(transform, 0.0, newSize.height);
-                    transform = CGAffineTransformScale(transform, 1.0, -1.0);
-                    break;
-                    
-                case UIImageOrientationUpMirrored:    // EXIF = 2
-                case UIImageOrientationDownMirrored:  // EXIF = 4
-                    transform = CGAffineTransformTranslate(transform, newSize.width, newSize.height);
-                    transform = CGAffineTransformScale(transform, -1.0, -1.0);
-                    break;
-                
-                case UIImageOrientationLeftMirrored:  // EXIF = 5
-                case UIImageOrientationRightMirrored: // EXIF = 7
-                    break;
-                    
-                case UIImageOrientationLeft:          // EXIF = 6
-                case UIImageOrientationRight:         // EXIF = 8
-                    transform = CGAffineTransformTranslate(transform, newSize.height, 0.0);
-                    transform = CGAffineTransformScale(transform, -1.0, 1.0);
-                    break;
-            }
-        } else {
-            switch (image.imageOrientation) {
-                case UIImageOrientationUpMirrored:     // EXIF = 2
-                case UIImageOrientationDownMirrored:   // EXIF = 4
-                    transform = CGAffineTransformTranslate(transform, newSize.width, 0.0);
-                    transform = CGAffineTransformScale(transform, -1, 1);
-                    break;
-                
-                case UIImageOrientationLeftMirrored:   // EXIF = 5
-                case UIImageOrientationRightMirrored:  // EXIF = 7
-                    transform = CGAffineTransformTranslate(transform, newSize.height, 0.0);
-                    transform = CGAffineTransformScale(transform, -1.0, 1.0);
-                    break;
 
-                case UIImageOrientationUp:
-                case UIImageOrientationDown:
-                case UIImageOrientationLeft:
-                case UIImageOrientationRight:
-                    //do nothing
-                    break;
-            }
-        }
- */
         return transform;
     }
 
